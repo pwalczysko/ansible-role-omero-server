@@ -28,7 +28,7 @@ provisioner:
   # - install omero during the prepare step which is only run once
   # - attempt to upgrade in the converge step
   options:
-    vvv: true
+    vvvv: true
     diff: true
     # tags: [x]
   playbooks:
