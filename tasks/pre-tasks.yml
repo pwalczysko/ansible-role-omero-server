@@ -3,7 +3,7 @@
 # undeclared variable failure
 - name: omero server | Import ome.omero_common role
   ansible.builtin.import_role:
-    name: omero_common
+    name: ome.omero_common
 
 - name: omero server | Include ome.basedeps role
   ansible.builtin.include_role:
