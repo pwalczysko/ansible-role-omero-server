@@ -13,9 +13,11 @@
   include_role:
     name: ome.java
 
-- name: omero server | Include ome.python3_virtualenv
-  include_role:
-    name: ome.python3_virtualenv
+- name: omero server | Include python3_virtualenv
+  ansible.builtin.import_role:
+    name: python3_virtualenv
+  vars:
+    virtualenv_basedir: "{{ omero_server_basedir }}"
 
 - name: omero server | Include ome.ice role
   include_role:
