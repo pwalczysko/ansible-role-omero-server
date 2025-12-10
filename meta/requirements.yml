@@ -2,7 +2,9 @@
 
 - src: ome.omero_common
 - src: ome.basedeps
-- src: ome.java
+- name: java
+  src: https://github.com/dominikl/ansible-role-java
+  version: temurin
 - src: ome.python3_virtualenv
 - src: ome.ice
 - src: ome.postgresql_client
