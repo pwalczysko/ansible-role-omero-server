@@ -3,7 +3,9 @@
 - src: ome.omero_common
 - src: ome.basedeps
 - src: ome.java
-- src: ome.python3_virtualenv
+- name: python3_virtualenv
+  src: https://github.com/pwalczysko/ansible-role-python3_virtualenv
+  version: no-ensurepipwq
 - src: ome.ice
 - src: ome.postgresql
 - src: ome.postgresql_client
