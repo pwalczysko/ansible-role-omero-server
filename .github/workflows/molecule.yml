@@ -40,23 +40,34 @@ jobs:
             pip install "ansible-core>=2.20.6"
             pip install "molecule-plugins[docker]<25" pytest-testinfra
       # - name: Run molecule
-      #   run: molecule test -s "${{ matrix.scenario }}"
-      - name: Run Molecule (debug)
+      - name: Validate Molecule config with Python
         run: |
-          echo "### Versions ###"
-          python --version
-          pip --version
-          ansible --version
-          molecule --version
-          pip show molecule molecule-plugins ansible-core ansible-compat || true
+          python - <<'PY'
+          import traceback
+          from molecule.config import Config
 
-          echo
-          echo "### Validating scenario ###"
-          molecule --debug syntax -s "${{ matrix.scenario }}"
+          try:
+              Config("molecule/${{ matrix.scenario }}/molecule.yml")
+              print("Configuration loaded successfully.")
+          except Exception:
+              traceback.print_exc()
+          PY
+            - name: Run Molecule (debug)
+              run: |
+                echo "### Versions ###"
+                python --version
+                pip --version
+                ansible --version
+                molecule --version
+                pip show molecule molecule-plugins ansible-core ansible-compat || true
 
-          echo
-          echo "### Running scenario ###"
-          molecule --debug test -s "${{ matrix.scenario }}"
+                echo
+                echo "### Validating scenario ###"
+                molecule --debug syntax -s "${{ matrix.scenario }}"
+
+                echo
+                echo "### Running scenario ###"
+                molecule --debug test -s "${{ matrix.scenario }}"
 
   publish:
     name: Galaxy
