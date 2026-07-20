@@ -39,8 +39,24 @@ jobs:
             pip install "molecule" 
             pip install "ansible-core>=2.20.6"
             pip install molecule-plugins[docker] pytest-testinfra
-      - name: Run molecule
-        run: molecule test -s "${{ matrix.scenario }}"
+      # - name: Run molecule
+      #   run: molecule test -s "${{ matrix.scenario }}"
+      - name: Run Molecule (debug)
+        run: |
+          echo "### Versions ###"
+          python --version
+          pip --version
+          ansible --version
+          molecule --version
+          pip show molecule molecule-plugins ansible-core ansible-compat || true
+
+          echo
+          echo "### Validating scenario ###"
+          molecule --debug syntax -s "${{ matrix.scenario }}"
+
+          echo
+          echo "### Running scenario ###"
+          molecule --debug test -s "${{ matrix.scenario }}"
 
   publish:
     name: Galaxy
