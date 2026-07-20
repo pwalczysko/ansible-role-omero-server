@@ -1,4 +1,3 @@
----
 name: Molecule
 # yamllint disable-line rule:truthy
 on:
@@ -24,50 +23,58 @@ jobs:
       - list-scenarios
     runs-on: ubuntu-24.04
     strategy:
-      # Keep running so we can see if other tests pass
       fail-fast: false
       matrix:
-        scenario: ${{fromJson(needs.list-scenarios.outputs.matrix)}}
+        scenario: ${{ fromJson(needs.list-scenarios.outputs.matrix) }}
+
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+
       - name: Install Ansible & Molecule
         run: |
-            pip install "requests" "ansible==13.7.0" "ansible-lint" "flake8"
-            pip install "molecule<25" 
-            pip install "ansible-core>=2.20.6"
-            pip install "molecule-plugins[docker]<25" pytest-testinfra
-      # - name: Run molecule
-      - name: Validate Molecule config with Python
+          pip install "requests" "ansible==13.7.0" "ansible-lint" "flake8"
+          pip install "molecule"
+          pip install "ansible-core>=2.20.6"
+          pip install "molecule-plugins[docker]" pytest-testinfra
+
+      - name: Validate Molecule configuration (Python)
         run: |
           python - <<'PY'
           import traceback
           from molecule.config import Config
 
+          print("Loading configuration...")
+
           try:
-              Config("molecule/${{ matrix.scenario }}/molecule.yml")
+              cfg = Config("molecule/${{ matrix.scenario }}/molecule.yml")
               print("Configuration loaded successfully.")
+              print(f"Scenario: {cfg.scenario.name}")
+              print(f"Driver: {cfg.driver.name}")
           except Exception:
               traceback.print_exc()
+              raise
           PY
-            - name: Run Molecule (debug)
-              run: |
-                echo "### Versions ###"
-                python --version
-                pip --version
-                ansible --version
-                molecule --version
-                pip show molecule molecule-plugins ansible-core ansible-compat || true
 
-                echo
-                echo "### Validating scenario ###"
-                molecule --debug syntax -s "${{ matrix.scenario }}"
+      - name: Run Molecule (debug)
+        run: |
+          echo "### Versions ###"
+          python --version
+          pip --version
+          ansible --version
+          molecule --version
+          pip show molecule molecule-plugins ansible-core ansible-compat || true
 
-                echo
-                echo "### Running scenario ###"
-                molecule --debug test -s "${{ matrix.scenario }}"
+          echo
+          echo "### Validating scenario ###"
+          molecule --debug syntax -s "${{ matrix.scenario }}"
+
+          echo
+          echo "### Running scenario ###"
+          molecule --debug test -s "${{ matrix.scenario }}"
 
   publish:
     name: Galaxy
@@ -80,4 +87,4 @@ jobs:
         uses: ansible-actions/ansible-galaxy-action@v1.2.0
         with:
           galaxy_api_key: ${{ secrets.GALAXY_API_KEY }}
-          galaxy_version: ${{  github.ref_name }}
+          galaxy_version: ${{ github.ref_name }}
