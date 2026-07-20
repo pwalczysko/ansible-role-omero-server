@@ -38,7 +38,7 @@ jobs:
             pip install "requests" "ansible==13.7.0" "ansible-lint" "flake8"
             pip install "molecule<25" 
             pip install "ansible-core>=2.20.6"
-            pip install molecule-plugins[docker] pytest-testinfra
+            pip install molecule-plugins[docker]<24 pytest-testinfra
       # - name: Run molecule
       #   run: molecule test -s "${{ matrix.scenario }}"
       - name: Run Molecule (debug)
