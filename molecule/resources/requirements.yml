@@ -3,7 +3,10 @@
 - src: ome.omero_common
 - src: ome.basedeps
 - src: ome.java
-- src: ome.python3_virtualenv
+#- src: ome.python3_virtualenv
+- name: python3_virtualenv
+  source: https://github.com/khaledk2/ansible-role-python3-virtualenv.git
+  version: fx_version_check
 - src: ome.ice
 - src: ome.postgresql
 - src: ome.postgresql_client
