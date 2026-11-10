@@ -1,5 +1,5 @@
 ---
-name: Molecule
+name: Molecule ARM64
 # yamllint disable-line rule:truthy
 on:
   push:
