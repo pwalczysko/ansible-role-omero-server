@@ -39,6 +39,11 @@ jobs:
             pip install "molecule" 
             pip install "ansible-core>=2.20.6"
             pip install molecule-plugins[docker] pytest-testinfra
+      - name: Check runner and Docker architectures
+        run: |
+          uname -m
+          docker info --format '{{.Architecture}}'
+          docker run --rm eniocarboni/docker-rockylinux-systemd:9 uname -m
       - name: Run molecule
         run: molecule test -s "${{ matrix.scenario }}"
 
